@@ -9,7 +9,7 @@
 int main(int argc, char *argv[])
 {
     int numprocs, myid, N;
-    matrix *A, *Q, *mat, *p, *matTmp, *matTmp2;
+    matrix *A, *Q, *mat, *p, *matTmp;
     double *vec, coef;
 
     MPI_Init(&argc, &argv);
@@ -240,6 +240,12 @@ int main(int argc, char *argv[])
         std::cout << "Matrix R:" << std::endl;
         A->print();
     }
+
+    delete A;
+    delete Q; 
+    delete p;
+    delete matTmp;
+    delete[] vec;
     MPI_Finalize();
     return 0;
 }
