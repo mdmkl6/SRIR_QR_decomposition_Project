@@ -53,11 +53,23 @@ public:
         {
             for (int j = 0; j < _numcols; j++)
             {
-                std::cout <<  std::setw(9) << std::setfill(' ') << std::setprecision(5) << std::fixed << _data[i][j] << " ";
+                std::cout << std::setw(9) << std::setfill(' ') << std::setprecision(5) << std::fixed << _data[i][j] << " ";
             }
             std::cout << std::endl;
         }
         std::cout << std::endl;
+    }
+
+    void save_to_file(std::ofstream &file)
+    {
+        for (int i = 0; i < _numrows; i++)
+        {
+            for (int j = 0; j < _numcols; j++)
+            {
+                file << _data[i][j] << " ";
+            }
+            file << std::endl;
+        }
     }
 
     void broadcast_to_all()

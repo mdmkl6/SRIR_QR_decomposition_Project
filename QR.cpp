@@ -239,10 +239,21 @@ int main(int argc, char *argv[])
         Q->print();
         std::cout << "Matrix R:" << std::endl;
         A->print();
+
+        if (argc >= 2)
+        {
+            std::ofstream outfile(argv[2]);
+            if (outfile.is_open())
+            {
+                Q->save_to_file(outfile);
+                A->save_to_file(outfile);
+                outfile.close();
+            }
+        }
     }
 
     delete A;
-    delete Q; 
+    delete Q;
     delete p;
     delete matTmp;
     delete[] vec;

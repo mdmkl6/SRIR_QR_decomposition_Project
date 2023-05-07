@@ -1,6 +1,7 @@
 SHELL := /bin/bash
 
 file ?= matrix.txt
+outfile ?= 
 
 all: compile run clean
 
@@ -10,7 +11,7 @@ compile:
 
 run:
 	n=$$(wc -l nodes | awk '{print $$1}'); \
-	/opt/nfs/mpich-4.0.1/bin/mpiexec -f nodes -n $$n ./QR.out $(file)
+	/opt/nfs/mpich-4.0.1/bin/mpiexec -f nodes -n $$n ./QR.out $(file) $(outfile)
 
 clean:
 	rm -f QR.out; rm nodes
