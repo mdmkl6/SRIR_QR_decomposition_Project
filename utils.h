@@ -77,8 +77,17 @@ public:
         // wstawiamy dodatkową linię dla czytelności
         std::cout << std::endl;
     }
-
-    // Metoda do rozgłaszania macierzy do wszystkich procesów.
+    void save_to_file(std::ofstream &file)
+    {
+        for (int i = 0; i < _numrows; i++)
+        {
+            for (int j = 0; j < _numcols; j++)
+            {
+                file << _data[i][j] << " ";
+            }
+            file << std::endl;
+        }
+    }
     void broadcast_to_all()
     {
         // broadcastujemy liczbę wierszy

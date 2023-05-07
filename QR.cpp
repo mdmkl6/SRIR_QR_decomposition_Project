@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
             send_counts2[numprocs - 1] = ((N * row) - displs2[numprocs - 1]);
         }
 
-        float x = 0;
+        double x = 0;
         if (i > 0 && i < N - numprocs)
         {
             delete[] vec;
