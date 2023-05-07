@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
 
     int displs[MAX_PROCESSES], send_counts[MAX_PROCESSES], displs2[MAX_PROCESSES], send_counts2[MAX_PROCESSES];
 
+    // Sprawdzenie, czy podano nazwę pliku.
     if (myid == 0)
     {
         if (argc < 1)
@@ -26,6 +27,8 @@ int main(int argc, char *argv[])
             MPI_Finalize();
             return 0;
         }
+
+        // Wczytanie macierzy z pliku i sprawdzenie jej wymiarów.
         A = matrix::loadfromfile(argv[1]);
         if (A->_numcols != A->_numrows)
         {
@@ -33,6 +36,8 @@ int main(int argc, char *argv[])
             MPI_Finalize();
             return 0;
         }
+
+        // Rozgłoszenie macierzy A do wszystkich procesów.
         A->broadcast_to_all();
 
         std::cout << "Loaded Matrix A:" << std::endl;
@@ -40,15 +45,20 @@ int main(int argc, char *argv[])
     }
     else
     {
+        // Odebranie macierzy A od procesu o id=0.
         A = matrix::recive_broadcast();
     }
+
     N = A->_numcols;
+
+    // Stworzenie macierzy Q jako macierzy jednostkowej o wymiarze NxN.
     Q = matrix::create_identity_matrix(N);
 
     int tmpN, tmpN2;
 
     for (int i = 0; i < N; i++)
     {
+        // Obliczenie wymiarów podmacierzy, którą będzie przetwarzał każdy proces.
         tmpN = (N - i) / numprocs;
         if (myid == (numprocs - 1) && numprocs > 1)
             tmpN += (N - i) % numprocs;
@@ -57,17 +67,22 @@ int main(int argc, char *argv[])
         if (myid == (numprocs - 1) && numprocs > 1)
             tmpN2 += (N) % numprocs;
 
+        // Usunięcie poprzednio przetwarzanej podmacierzy.
         if (i > 0 && i < N - numprocs)
         {
             delete mat;
         }
+
+        // Stworzenie nowej podmacierzy o wymiarach tmpN x (N-i).
         mat = new matrix(tmpN, N - i);
 
+        // Synchronizacja macierzy A i Q między procesami.
         A->synchronize_all();
         Q->synchronize_all();
 
         int piece = (N - i) / numprocs;
         int row = N - i;
+
         send_counts[0] = piece * row;
         displs[0] = 0;
 
@@ -232,20 +247,29 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (myid == 0)
-    {
-        std::cout << "Solution" << std::endl;
-        std::cout << "Matrix Q:" << std::endl;
-        Q->print();
-        std::cout << "Matrix R:" << std::endl;
-        A->print();
-    }
+if (myid == 0)
+{
+    // Jeśli identyfikator bieżącego procesu to 0, to wyświetl rozwiązanie.
+    std::cout << "Solution" << std::endl;
 
-    delete A;
-    delete Q; 
-    delete p;
-    delete matTmp;
-    delete[] vec;
-    MPI_Finalize();
-    return 0;
+    // Wyświetl macierz Q.
+    std::cout << "Matrix Q:" << std::endl;
+    Q->print();
+
+    // Wyświetl macierz R.
+    std::cout << "Matrix R:" << std::endl;
+    A->print();
+}
+
+// Zwolnij pamięć, która została dynamicznie przydzielona dla obiektów A, Q, p, matTmp i vec.
+delete A;
+delete Q; 
+delete p;
+delete matTmp;
+delete[] vec;
+
+// Zakończ pracę biblioteki MPI.
+MPI_Finalize();
+
+return 0;
 }
