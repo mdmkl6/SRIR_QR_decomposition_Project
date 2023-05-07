@@ -259,6 +259,18 @@ if (myid == 0)
     // Wyświetl macierz R.
     std::cout << "Matrix R:" << std::endl;
     A->print();
+
+    if (argc >= 2)
+        {
+            std::ofstream outfile(argv[2]);
+            if (outfile.is_open())
+            {
+                Q->save_to_file(outfile);
+                outfile<<std::endl;
+                A->save_to_file(outfile);
+                outfile.close();
+            }
+        }
 }
 
 // Zwolnij pamięć, która została dynamicznie przydzielona dla obiektów A, Q, p, matTmp i vec.

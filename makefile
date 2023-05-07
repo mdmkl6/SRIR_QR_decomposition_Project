@@ -2,6 +2,7 @@ SHELL := /bin/bash
 
 file ?= matrix.txt
 outfile ?= 
+file2 ?= 
 
 all: compile run clean
 
@@ -15,3 +16,14 @@ run:
 
 clean:
 	rm -f QR.out; rm nodes
+
+all-test: compile-test run-test clean-test
+
+compile-test:
+	g++ test.cpp -o test.out
+
+run-test:
+	./test.out $(file) $(file2) $(outfile)
+
+clean-test:
+	rm -f test.out
