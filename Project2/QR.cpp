@@ -178,8 +178,6 @@ int main(int argc, char *argv[])
                 }
             }
 
-            mat->print();
-            upcxx::barrier();
             mat->gather(myid, p, displs[myid], send_counts[myid]);
             upcxx::barrier();
             p->synchronize_all();

@@ -73,12 +73,10 @@ public:
     // displs - przesunięcie początku danych w buforze recvbuf dla każdego procesu
     void gather(int myid, matrix *target, int sendstart, int count)
     {
-        std::cout<<sendstart<<std::endl;
-        std::cout<<count<<std::endl;
         upcxx::global_ptr<double> matrix;
         if(myid==0)
         {
-            matrix = upcxx::new_array<double>(_numrows * _numcols);
+            matrix = upcxx::new_array<double>(target->_numrows * target->_numcols);
             matrix = upcxx::broadcast(matrix, 0).wait();
 
             int i = 0;
@@ -87,7 +85,7 @@ public:
 
             upcxx::barrier();
             double *local_matrix = matrix.local();
-            for(; i < _numrows * _numcols; i++)
+            for(; i < target->_numrows * target->_numcols; i++)
                 target->_data[0][sendstart+i]=local_matrix[i];
         }
         else{
